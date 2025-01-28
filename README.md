@@ -5,6 +5,16 @@ RNA molecules are crucial compoments in the central dogma of biology. Not only a
 
 ## Methods
 
+Talk about ribozymes and why we are choosing this
+
+talk about the data from logan (SRA wide ribozyme search)
+
+transformer model
+
+GNN model
+
+pdb structures and potentially augementing it
+
 
 ## About the Team
-Purav Gupta, Yoyo Lui, Rahul Selvakumar, Nicholas Carbones, Xin Lei Lin, Ahmad Khan, Flora Liu
+Purav Gupta, Yoyo Liu, Rahul Selvakumar, Nicholas Carbones, Xin Lei Lin, Ahmad Khan, Flora Liu
