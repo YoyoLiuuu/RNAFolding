@@ -17,4 +17,5 @@ pdb structures and potentially augementing it
 
 
 ## About the Team
-Purav Gupta, Yoyo Liu, Rahul Selvakumar, Nicholas Carbones, Xin Lei Lin, Ahmad Khan, Flora Liu
+Team co-leads: Purav Gupta, Yoyo Liu
+Members: Nicholas Carbones, Xin Lei Lin, Flora Liu, Ahmad Khan, Rahul Selvakumar
