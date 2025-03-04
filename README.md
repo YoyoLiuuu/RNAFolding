@@ -21,3 +21,10 @@ Overall, this project is operating at the forefront of RNA Ribozyme biology and 
 ## About the Team
 Team co-leads: Purav Gupta, Yoyo Liu
 Members: Nicholas Carbones, Xin Lei Lin, Flora Liu, Ahmad Khan, Rahul Selvakumar
+
+To run the code you need to setup a venv (if you want lol) and then run the requirements.txt file. 
+
+Then call:
+python src/main.py --data_path ./rna_sequences --checkpoint_dir ./lora_checkpoints --epochs 1 --batch_size 2
+
+from the dir of the repo. It probably won't work all the way because of LoRA and how it is setup. LoRA commented out is the og LoRA and current implementation is my custom code. 
