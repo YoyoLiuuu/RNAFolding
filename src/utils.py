@@ -86,3 +86,5 @@ def custom_collate(batch):
 
 dataset = RNADataset(alphabet=alphabet)
 dataloader = DataLoader(dataset, batch_size=5, collate_fn=custom_collate)
+
+print(dataloader)
