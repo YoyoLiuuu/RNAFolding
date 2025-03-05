@@ -7,20 +7,16 @@ from torch.nn.utils.rnn import pad_sequence
 
 import fm
 import random
+from Bio import SeqIO
 
 _, alphabet = fm.pretrained.rna_fm_t12()
 
 class RNADataset(torch.utils.data.Dataset): 
-    def __init__(self, alphabet, folder_path = None, masking_ratio = 0.3):
-        # self.rna_list = [] 
-        # for i in os.listdir(folder_path):
-        #     with open(os.path.join(folder_path, i), "r") as f:
-        #         self.rna_list.append(f.read())
-        
-        # TODO: data logic. Not sure what it is
-        
-        self.alphabet = alphabet
-        self.rna_list = ["GGGUGCGAUCAUACCAGCACUAAUGCCCUCCUGGGAAGUCCUCGUGUUGCACCCCU", "AUGGCCAUUGUAAUGGGCCGUGAAUUU"]
+    def __init__(self, alphabet, fasta_path = os.path.join("Ribozyme_data", "ribocentre.fasta"), masking_ratio = 0.3):
+        self.rna_list = []
+        for record in SeqIO.parse(fasta_path, "fasta"):
+            self.rna_list.append(record.seq)
+        self.alphabet = alphabet        
         self.masking_ratio = masking_ratio
             
     def __len__(self, ):
