@@ -27,12 +27,16 @@ def parse_args():
     return args
 
 def main(args):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
     model, alphabet = load_rna_fm_t12()
     dataset = RNADataset(alphabet=alphabet, folder_path=args.data_path)
+    print(f"Dataset size: {len(dataset)}")
     dataloader = DataLoader(dataset, batch_size=args.batch_size, collate_fn=custom_collate, shuffle=True)
     
     lit_model = RNAFMLitModel(model, learning_rate=args.lr)
-    
+    lit_model.to(device)  # Ensure the model is also on the same device
+
     logger = TensorBoardLogger("logs", name="rna_fm_lora")
     checkpoint_callback = ModelCheckpoint(
         monitor="train_loss",
