@@ -1,3 +1,23 @@
+Ribonanza: 
+For our project, on EC2 instance, commands to install conda, set up environment, and run the code is: 
+Set up conda: 
+1. wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+2. bash ~/miniconda.sh -b -p $HOME/miniconda
+3. ~/miniconda/bin/conda init bash
+4. source ~/.bashrc
+
+Create environment: 
+1. conda env create -f env.yml
+
+Activate: 
+1. conda activate torch 
+
+GPU set up: 
+1. lspci | grep -i nvidia
+2. sudo apt update
+3. sudo apt install -y nvidia-driver-535
+4. CAREFULE: sudo reboot 
+
 # RNA Folding
 
 ## Background

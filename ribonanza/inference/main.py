@@ -10,4 +10,4 @@ print(test_dataset[0])
 
 model = finetuned_RibonanzaNet(load_config_from_yaml("ribonanzanet2d/configs/pairwise.yaml")).cuda()
 
-print(model)
+# model.load_state_dict(torch.load(''))

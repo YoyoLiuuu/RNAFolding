@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Anaconda
+ribonanza/Anaconda2-4.1.1-Linux-x86_64.sh
+
 # C extensions
 *.so
 
