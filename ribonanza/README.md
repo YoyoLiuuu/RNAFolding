@@ -1,3 +1,6 @@
+This README document is from RibonanzaNet github repo for training, authored by Shujun He. 
+This ribonanza builds on Shujun's work on secondary structure prediction with Ribonanza, we are using this as a baseline model for our code. 
+
 # RibonanzaNet
 
 Training code for RibonanzaNet. 
