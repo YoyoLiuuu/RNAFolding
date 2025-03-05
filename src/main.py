@@ -26,6 +26,12 @@ def main():
         shuffle=True
     )
 
+    for name, param in model.named_parameters():
+        print(f'{name}: requires_grad={param.requires_grad}')
+
+    for param in model.parameters():
+        param.requires_grad = True
+
     # Start training
     train(
         model,
