@@ -3,6 +3,7 @@ from src.lora import add_lora
 import pytorch_lightning as pl
 import torch 
 import torch.nn as nn
+from tqdm import tqdm 
 
 def load_rna_fm_t12():
     model, alphabet = fm.pretrained.rna_fm_t12()
@@ -21,6 +22,7 @@ class RNAFMLitModel(pl.LightningModule):
         return self.model(x)["logits"]
     
     def training_step(self, batch, batch_idx):
+        print("HI")
         masked_sequences, unmasked_sequences, _ = batch
         masked_sequences = masked_sequences.long()
         unmasked_sequences = unmasked_sequences.long()
@@ -29,7 +31,9 @@ class RNAFMLitModel(pl.LightningModule):
         loss = self.criterion(outputs.view(-1, outputs.size(-1)), unmasked_sequences.view(-1))
         
         self.log("train_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
-        return loss
+
+        return loss  # Removed tqdm
+
     
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)

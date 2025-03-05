@@ -22,7 +22,7 @@ def parse_args():
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoints', help='Directory to save checkpoints')
     parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
-    parser.add_argument('--batch_size', type=int, default=4, help='Batch size')
+    parser.add_argument('--batch_size', type=int, default=1, help='Batch size')
     args = parser.parse_args()
     return args
 
@@ -32,7 +32,11 @@ def main(args):
     model, alphabet = load_rna_fm_t12()
     dataset = RNADataset(alphabet=alphabet, folder_path=args.data_path)
     print(f"Dataset size: {len(dataset)}")
-    dataloader = DataLoader(dataset, batch_size=args.batch_size, collate_fn=custom_collate, shuffle=True)
+
+    dataloader = DataLoader(
+        dataset, batch_size=args.batch_size, collate_fn=custom_collate, shuffle=True,
+        num_workers=0, pin_memory=False, persistent_workers=False
+    )
     
     lit_model = RNAFMLitModel(model, learning_rate=args.lr)
     lit_model.to(device)  # Ensure the model is also on the same device
@@ -54,9 +58,9 @@ def main(args):
         accelerator="gpu" if torch.cuda.is_available() else "cpu"
     )
     
+    print("Starting training...")
     trainer.fit(lit_model, dataloader)
-    print(f"Best model saved at: {checkpoint_callback.best_model_path}")
-
+    print(f"Training completed. Best model saved at: {checkpoint_callback.best_model_path}")
 
 if __name__ == "__main__":
     args = parse_args()
