@@ -1,67 +1,37 @@
-# import fm
-# from peft import get_peft_model, LoraConfig, TaskType
-
-# def get_model():
-#     # Base
-#     model, alphabet = fm.pretrained.rna_fm_t12()
-# # not sure if this is correct. 
-#     # LoRA stuff
-#     peft_config = LoraConfig(
-#         r=8,
-#         lora_alpha=16,
-#         lora_dropout=0.1,
-#         bias="none",
-#         target_modules=["q_proj", "v_proj", "k_proj", "out_proj"],
-#         inference_mode = False, 
-#         task_type=TaskType.FEATURE_EXTRACTION
-
-#     )
-#     return get_peft_model(model, peft_config), alphabet
-
-
-### Custom LORA
-import torch
-import torch.nn as nn
 import fm
+from src.lora import add_lora
+import pytorch_lightning as pl
+import torch 
+import torch.nn as nn
 
-class LoRALayer(nn.Module):
-    def __init__(self, original_layer, r=8):
+def load_rna_fm_t12():
+    model, alphabet = fm.pretrained.rna_fm_t12()
+    model = add_lora(model)
+    return model, alphabet
+
+class RNAFMLitModel(pl.LightningModule):
+    def __init__(self, model, learning_rate=1e-3):
         super().__init__()
-        self.original_layer = original_layer  # Preserve original layer
-        self.in_features = original_layer.in_features
-        self.out_features = original_layer.out_features
-        self.r = r
-
-        self.lora_A = nn.Parameter(torch.randn(self.in_features, r))
-        self.lora_B = nn.Parameter(torch.zeros(r, self.out_features, requires_grad=True))
-
-        original_layer.weight.requires_grad = False
-        if original_layer.bias is not None:
-            original_layer.bias.requires_grad = False
-
-    @property
-    def weight(self):
-        """Expose original layer's weight for compatibility"""
-        return self.original_layer.weight
-
-    @property
-    def bias(self):
-        """Expose original layer's bias for compatibility"""
-        return self.original_layer.bias
-
+        self.model = model
+        self.criterion = nn.CrossEntropyLoss(ignore_index=1)
+        self.learning_rate = learning_rate
+        self.save_hyperparameters()
+    
     def forward(self, x):
-        return self.original_layer(x) + (x @ self.lora_A @ self.lora_B)
+        return self.model(x)["logits"]
     
+    def training_step(self, batch, batch_idx):
+        masked_sequences, unmasked_sequences, _ = batch
+        masked_sequences = masked_sequences.long()
+        unmasked_sequences = unmasked_sequences.long()
+        
+        outputs = self(masked_sequences)
+        loss = self.criterion(outputs.view(-1, outputs.size(-1)), unmasked_sequences.view(-1))
+        
+        self.log("train_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
+        return loss
     
-def add_lora(model):
-    for param in model.parameters():
-        param.requires_grad = False
-        
-    for layer in model.layers:
-        attn = layer.self_attn
-        attn.q_proj = LoRALayer(attn.q_proj)
-        attn.k_proj = LoRALayer(attn.k_proj)
-        attn.v_proj = LoRALayer(attn.v_proj)
-        attn.out_proj = LoRALayer(attn.out_proj)
-        
-    return model
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2)
+        return {"optimizer": optimizer, "lr_scheduler": scheduler, "monitor": "train_loss"}
