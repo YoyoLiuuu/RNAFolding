@@ -11,7 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 
 class RNA2D_set(Dataset): 
     def __init__(self, data): 
-        self.data = data 
+        self.data = pd.DataFrame(data) # convert input to DF
         self.tokens = {nt:i for i, nt in enumerate('ACGU')}
     
     def __len__(self):
