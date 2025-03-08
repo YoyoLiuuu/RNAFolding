@@ -18,6 +18,10 @@ GPU set up:
 3. sudo apt install -y nvidia-driver-535
 4. CAREFULE: sudo reboot 
 
+tmscoring install 
+1. go into the folder (where setup.py is located)
+2. pip install . 
+
 # RNA Folding
 
 ## Background
