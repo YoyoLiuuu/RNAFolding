@@ -33,7 +33,7 @@ class LoRALayer(nn.Module):
         self.r = r
 
         self.lora_A = nn.Parameter(torch.randn(self.in_features, r))
-        self.lora_B = nn.Parameter(torch.zeros(r, self.out_features))
+        self.lora_B = nn.Parameter(torch.zeros(r, self.out_features, requires_grad=True))
 
         original_layer.weight.requires_grad = False
         if original_layer.bias is not None:

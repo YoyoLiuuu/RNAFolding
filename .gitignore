@@ -6,6 +6,8 @@ __pycache__/
 # Anaconda
 ribonanza/Anaconda2-4.1.1-Linux-x86_64.sh
 
+*checkpoints/
+
 # C extensions
 *.so
 
